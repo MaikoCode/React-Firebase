@@ -3,18 +3,14 @@ import { UserContext } from '../context/userContext'
 import { useNavigate } from 'react-router-dom'
 
 
-export default function SignUpModal() {
+export default function SignInModal() {
 
-  const {modalState, toggleModals, signUp} = useContext(UserContext)
+  const {modalState, toggleModals, signIn} = useContext(UserContext)
   const [validation, setValidation] = useState("")
   const inputs = useRef([])
   const formRef = useState()
   const navigate = useNavigate()
 
-//   console.log(signUp)
-
-//   console.log(JSON.stringify(import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY))
-//   console.log(import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY)
 
 
   const addInputs = el => {
@@ -26,32 +22,17 @@ export default function SignUpModal() {
   const handleForm = async (e) => {
     e.preventDefault()
 
-    if((inputs.current[1].value.length || (inputs.current[1].value.length)) < 6){
-        setValidation("6 characters min")
-        return
-    }
-    else if(inputs.current[1].value !== inputs.current[2].value){
-        setValidation("Password do not match")
-        return
-    }
 
     try{
 
-        const cred = await signUp(inputs.current[0].value, inputs.current[1].value)
-        formRef.current.reset()
+        const cred = await signIn(inputs.current[0].value, inputs.current[1].value)
         setValidation("")
         toggleModals("close")   
         navigate("/private/private-home")
 
     }catch(err){
 
-        if(err.code === "auth/invalid-email"){
-            setValidation("Email format invalid")
-        }
-
-        if(err.code === "auth/email-already-in-use"){
-            setValidation("Email already use")
-        }
+       setValidation("Wopsy, email and/or password incorrect")
 
     }
   }
@@ -60,7 +41,7 @@ export default function SignUpModal() {
 
   return (
     <>
-    {modalState.signUpModal && (
+    {modalState.signInModal && (
 
    
         <div className='position-fixed top-0 vw-100 vh-100'>
@@ -77,21 +58,15 @@ export default function SignUpModal() {
 
                             <form onSubmit={handleForm} ref={formRef} className='sign-up-form'>
                                 <div className='mb-3'>
-                                    <label htmlFor="signUpEmail" className='form-label'>Email adress</label>
-                                    <input ref={addInputs} name="email" type="email" className='form-control' id='signUpEmail' required />
+                                    <label htmlFor="signInEmail" className='form-label'>Email adress</label>
+                                    <input ref={addInputs} name="email" type="email" className='form-control' id='signInEmail' required />
                                 </div>
 
                                 <div className='mb-3'>
-                                    <label htmlFor="signUpPwd" className='form-label'>Password</label>
-                                    <input  ref={addInputs} name="pwd" type="password" className='form-control' id='signUpPwd' required />
-                                </div>
-
-                                <div className='mb-3'>
-                                    <label htmlFor="repeatPwd" className='form-label'>Repeat Password</label>
-                                    <input ref={addInputs} name="pwd" type="password" className='form-control' id='repeatPwd' required />
+                                    <label htmlFor="signInPwd" className='form-label'>Password</label>
+                                    <input  ref={addInputs} name="pwd" type="password" className='form-control' id='signInPwd' required />
                                     <p className='text-danger mt-1'>{validation}</p>
                                 </div>
-                               
 
                                 <button className="btn btn-primary">Submit</button>
                             </form>
